@@ -1,0 +1,10 @@
+build/
+out/
+.vs/
+.vscode/
+CMakeSettings.json
+CMakeUserPresets.json
+*.exe
+*.o
+*.obj
+.DS_Store

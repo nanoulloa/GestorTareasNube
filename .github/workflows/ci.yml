@@ -1,0 +1,36 @@
+name: Integracion continua
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  compilar-y-probar:
+    name: Compilar y probar (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Descargar el codigo
+        uses: actions/checkout@v4
+
+      - name: Configurar con CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compilar
+        run: cmake --build build --config Release
+
+      - name: Correr las pruebas
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Publicar el ejecutable
+        uses: actions/upload-artifact@v4
+        with:
+          name: GestorTareas-${{ matrix.os }}
+          path: |
+            build/GestorTareas
+            build/Release/GestorTareas.exe
+          if-no-files-found: ignore
